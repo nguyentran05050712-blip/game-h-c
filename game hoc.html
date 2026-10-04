@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phòng Thoát Hiểm Kiến Thức - TP. Hồ Chí Minh Lớp 7</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0b0f19;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+
+        .font-orbitron {
+            font-family: 'Orbitron', monospace;
+        }
+
+        /* Neon Glow Effects */
+        .neon-border-cyan {
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.4), inset 0 0 10px rgba(6, 182, 212, 0.2);
+        }
+
+        .neon-border-amber {
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.4), inset 0 0 10px rgba(245, 158, 11, 0.2);
+        }
+
+        .neon-border-emerald {
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.5), inset 0 0 10px rgba(16, 185, 129, 0.2);
+        }
+
+        .neon-text-cyan {
+            text-shadow: 0 0 8px rgba(6, 182, 212, 0.7);
+        }
+
+        .neon-text-gold {
+            text-shadow: 0 0 10px rgba(234, 179, 8, 0.8);
+        }
+
+        /* Keypad button press effect */
+        .key-btn:active {
+            transform: scale(0.92);
+        }
+
+        /* Lock card hover glow */
+        .lock-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .lock-card:hover {
+            transform: translateY(-4px);
+        }
+
+        /* Vault door transition */
+        .door-panel-left {
+            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+        .door-panel-right {
+            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+        .door-open .door-panel-left {
+            transform: translateX(-100%);
+        }
+        .door-open .door-panel-right {
+            transform: translateX(100%);
+        }
+
+        /* Pulsing animation */
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.03); }
+        }
+        .pulse-glow {
+            animation: pulseGlow 2.5s infinite ease-in-out;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111827;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4b5563;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between relative bg-slate-950 text-slate-100 selection:bg-cyan-500 selection:text-black">
+
+    <!-- Top Bar Navigation & Status -->
+    <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 z-40 px-4 py-3">
+        <div class="max-w-6xl mx-auto flex flex-wrap justify-between items-center gap-3">
+            <!-- Game Title -->
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-cyan-950 border border-cyan-500 flex items-center justify-center text-cyan-400 shadow-md">
+                    <i class="fa-solid fa-door-closed text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-orbitron font-bold text-lg md:text-xl text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-teal-300 to-indigo-400 tracking-wider">
+                        PHÒNG THOÁT HIỂM KIẾN THỨC
+                    </h1>
+                    <p class="text-xs text-slate-400">Địa lý 7: TP. Hồ Chí Minh - Vị trí & Tầm vóc mới</p>
+                </div>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="flex items-center gap-4 bg-slate-950/80 px-4 py-2 rounded-xl border border-slate-800 text-sm">
+                <!-- Score -->
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-trophy text-amber-400"></i>
+                    <span class="text-slate-400 hidden sm:inline">Điểm:</span>
+                    <span id="scoreDisplay" class="font-orbitron font-bold text-amber-400 text-base">1000</span>
+                </div>
+                
+                <div class="h-4 w-px bg-slate-800"></div>
+
+                <!-- Timer -->
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-clock text-cyan-400"></i>
+                    <span class="text-slate-400 hidden sm:inline">Thời gian:</span>
+                    <span id="timerDisplay" class="font-orbitron font-bold text-cyan-400 text-base">00:00</span>
+                </div>
+
+                <div class="h-4 w-px bg-slate-800"></div>
+
+                <!-- Sound Toggle -->
+                <button id="soundToggleBtn" class="text-slate-400 hover:text-cyan-400 transition-colors p-1" title="Bật/Tắt âm thanh">
+                    <i id="soundIcon" class="fa-solid fa-volume-high text-base text-cyan-400"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="max-w-6xl mx-auto mt-2">
+            <div class="flex justify-between items-center text-xs text-slate-400 mb-1">
+                <span class="font-semibold text-cyan-400" id="progressText">Đã mở: 0 / 4 Ổ khóa</span>
+                <span id="progressPercent" class="font-orbitron">0%</span>
+            </div>
+            <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden border border-slate-700/50">
+                <div id="progressBar" class="bg-gradient-to-r from-cyan-500 via-teal-400 to-emerald-400 h-full w-0 transition-all duration-500"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-6xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start relative z-10">
+
+        <!-- Left Column: The 4 Locks Grid & Clue Notebook -->
+        <section class="lg:col-span-7 flex flex-col gap-6">
+
+            <!-- Intro Mission Banner -->
+            <div class="bg-gradient-to-r from-slate-900 via-slate-900 to-indigo-950/80 p-4 rounded-2xl border border-slate-800 shadow-lg relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="flex items-start gap-3">
+                    <div class="p-2.5 bg-amber-500/10 text-amber-400 rounded-xl border border-amber-500/30 shrink-0">
+                        <i class="fa-solid fa-shield-halved text-2xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="font-bold text-slate-100 text-base mb-1 flex items-center gap-2">
+                            NHIỆM VỤ THOÁT HIỂM
+                        </h2>
+                        <p class="text-xs md:text-sm text-slate-300 leading-relaxed">
+                            Vượt qua <span class="text-cyan-400 font-semibold">4 ổ khóa kiến thức</span> dựa trên tài liệu bài học. Mở mỗi ổ để nhận 1 chữ số bí mật. Đọc quy luật trong <span class="text-amber-400 font-semibold">Ghi Chép Manh Mối</span> để sắp xếp thứ tự 4 chữ số và nhập mật mã thoát hiểm!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4 Locks Challenge Cards Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                <!-- Lock 1 -->
+                <div id="lockCard1" onclick="openLockModal(1)" class="lock-card bg-slate-900/90 border border-slate-800 hover:border-cyan-500/60 p-5 rounded-2xl cursor-pointer relative overflow-hidden group">
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-cyan-950 text-cyan-400 border border-cyan-800">
+                            <i class="fa-solid fa-magnifying-glass"></i> Ổ 1 - TÌM MANH MỐI
+                        </span>
+                        <div id="lockIcon1" class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400 group-hover:text-amber-400 transition-colors">
+                            <i class="fa-solid fa-lock"></i>
+                        </div>
+                    </div>
+                    <h3 class="font-bold text-slate-200 text-sm mb-1 group-hover:text-cyan-300 transition-colors">Từ Khóa Quan Trọng</h3>
+                    <p class="text-xs text-slate-400 line-clamp-2">Địa danh ví như "Phố Wall của Việt Nam" và đơn vị phường...</p>
+                    <div id="lockStatus1" class="mt-4 pt-3 border-t border-slate-800/80 flex justify-between items-center text-xs">
+                        <span class="text-slate-500">Trạng thái: <span class="text-amber-400 font-medium">Đang khóa</span></span>
+                        <span id="digitBadge1" class="hidden font-orbitron font-bold text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800">MÃ: ?</span>
+                    </div>
+                </div>
+
+                <!-- Lock 2 -->
+                <div id="lockCard2" onclick="openLockModal(2)" class="lock-card bg-slate-900/90 border border-slate-800 hover:border-cyan-500/60 p-5 rounded-2xl cursor-pointer relative overflow-hidden group">
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-indigo-950 text-indigo-400 border border-indigo-800">
+                            <i class="fa-solid fa-puzzle-piece"></i> Ổ 2 - GIẢI MÃ
+                        </span>
+                        <div id="lockIcon2" class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400 group-hover:text-amber-400 transition-colors">
+                            <i class="fa-solid fa-lock"></i>
+                        </div>
+                    </div>
+                    <h3 class="font-bold text-slate-200 text-sm mb-1 group-hover:text-cyan-300 transition-colors">Ba Mảnh Ghép Vàng</h3>
+                    <p class="text-xs text-slate-400 line-clamp-2">Giải mã tên 2 mảnh ghép: Bộ não & Cánh tay sản xuất...</p>
+                    <div id="lockStatus2" class="mt-4 pt-3 border-t border-slate-800/80 flex justify-between items-center text-xs">
+                        <span class="text-slate-500">Trạng thái: <span class="text-amber-400 font-medium">Đang khóa</span></span>
+                        <span id="digitBadge2" class="hidden font-orbitron font-bold text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800">MÃ: ?</span>
+                    </div>
+                </div>
+
+                <!-- Lock 3 -->
+                <div id="lockCard3" onclick="openLockModal(3)" class="lock-card bg-slate-900/90 border border-slate-800 hover:border-cyan-500/60 p-5 rounded-2xl cursor-pointer relative overflow-hidden group">
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-purple-950 text-purple-400 border border-purple-800">
+                            <i class="fa-solid fa-user-secret"></i> Ổ 3 - TRUY TÌM
+                        </span>
+                        <div id="lockIcon3" class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400 group-hover:text-amber-400 transition-colors">
+                            <i class="fa-solid fa-lock"></i>
+                        </div>
+                    </div>
+                    <h3 class="font-bold text-slate-200 text-sm mb-1 group-hover:text-cyan-300 transition-colors">Cảng Biển & KCN</h3>
+                    <p class="text-xs text-slate-400 line-clamp-2">Truy tìm chi tiết đúng về bến cảng Cái Mép – Thị Vải...</p>
+                    <div id="lockStatus3" class="mt-4 pt-3 border-t border-slate-800/80 flex justify-between items-center text-xs">
+                        <span class="text-slate-500">Trạng thái: <span class="text-amber-400 font-medium">Đang khóa</span></span>
+                        <span id="digitBadge3" class="hidden font-orbitron font-bold text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800">MÃ: ?</span>
+                    </div>
+                </div>
+
+                <!-- Lock 4 -->
+                <div id="lockCard4" onclick="openLockModal(4)" class="lock-card bg-slate-900/90 border border-slate-800 hover:border-cyan-500/60 p-5 rounded-2xl cursor-pointer relative overflow-hidden group">
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-pink-950 text-pink-400 border border-pink-800">
+                            <i class="fa-solid fa-brain"></i> Ổ 4 - THỬ THÁCH CUỐI
+                        </span>
+                        <div id="lockIcon4" class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400 group-hover:text-amber-400 transition-colors">
+                            <i class="fa-solid fa-lock"></i>
+                        </div>
+                    </div>
+                    <h3 class="font-bold text-slate-200 text-sm mb-1 group-hover:text-cyan-300 transition-colors">Công Nghệ Cao</h3>
+                    <p class="text-xs text-slate-400 line-clamp-2">Vận dụng kiến thức xác định trái tim sản xuất chip...</p>
+                    <div id="lockStatus4" class="mt-4 pt-3 border-t border-slate-800/80 flex justify-between items-center text-xs">
+                        <span class="text-slate-500">Trạng thái: <span class="text-amber-400 font-medium">Đang khóa</span></span>
+                        <span id="digitBadge4" class="hidden font-orbitron font-bold text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800">MÃ: ?</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Collected Digits Notebook & Clue Sheet -->
+            <div class="bg-slate-900/80 border border-slate-800 p-5 rounded-2xl">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-slate-200 text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-book-bookmark text-amber-400"></i> GHI CHÉP MANH MỐI & SỐ BÍ MẬT
+                    </h3>
+                    <span class="text-xs text-slate-400">Thu thập đủ 4 ổ để nhận chỉ dẫn</span>
+                </div>
+
+                <div class="grid grid-cols-4 gap-2 text-center mb-4">
+                    <div class="bg-slate-950 border border-slate-800 rounded-xl p-3">
+                        <span class="block text-[10px] text-slate-500 font-semibold mb-1">Ổ 1</span>
+                        <span id="collectedDigit1" class="font-orbitron font-black text-xl text-slate-600">?</span>
+                    </div>
+                    <div class="bg-slate-950 border border-slate-800 rounded-xl p-3">
+                        <span class="block text-[10px] text-slate-500 font-semibold mb-1">Ổ 2</span>
+                        <span id="collectedDigit2" class="font-orbitron font-black text-xl text-slate-600">?</span>
+                    </div>
+                    <div class="bg-slate-950 border border-slate-800 rounded-xl p-3">
+                        <span class="block text-[10px] text-slate-500 font-semibold mb-1">Ổ 3</span>
+                        <span id="collectedDigit3" class="font-orbitron font-black text-xl text-slate-600">?</span>
+                    </div>
+                    <div class="bg-slate-950 border border-slate-800 rounded-xl p-3">
+                        <span class="block text-[10px] text-slate-500 font-semibold mb-1">Ổ 4</span>
+                        <span id="collectedDigit4" class="font-orbitron font-black text-xl text-slate-600">?</span>
+                    </div>
+                </div>
+
+                <div id="ruleClueBox" class="bg-amber-950/30 border border-amber-800/40 p-3.5 rounded-xl text-xs text-amber-200/90 flex items-start gap-2.5">
+                    <i class="fa-solid fa-lightbulb text-amber-400 text-base shrink-0 mt-0.5"></i>
+                    <p id="ruleClueText">
+                        <span class="font-bold text-amber-400">QUY LUẬT SẮP XẾP MẬT MÃ:</span> Hãy mở tất cả 4 ổ khóa để nhận chỉ dẫn sắp xếp thứ tự 4 chữ số vào bàn phím thoát hiểm!
+                    </p>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Right Column: Interactive Vault Door & Keypad Entry -->
+        <section class="lg:col-span-5 flex flex-col gap-6">
+
+            <div class="bg-slate-900/90 border border-slate-800 p-5 rounded-2xl relative overflow-hidden shadow-2xl">
+                <!-- Header -->
+                <div class="text-center mb-4">
+                    <span class="text-[11px] font-orbitron tracking-widest text-cyan-400 uppercase font-semibold">BẢNG ĐIỀU KHIỂN CỬA THOÁT HIỂM</span>
+                    <h2 class="font-orbitron font-bold text-lg text-slate-100">NHẬP MẬT MÃ 4 CHỮ SỐ</h2>
+                </div>
+
+                <!-- Digital Display -->
+                <div class="bg-slate-950 border-2 border-slate-800 rounded-xl p-4 mb-5 text-center shadow-inner relative">
+                    <div class="text-[10px] font-orbitron text-slate-500 uppercase tracking-widest mb-1">MẬT MÃ ĐÃ NHẬP</div>
+                    <div id="keypadDisplay" class="font-orbitron font-black text-3xl tracking-[0.4em] text-cyan-400 h-10 flex items-center justify-center neon-text-cyan">
+                        _ _ _ _
+                    </div>
+                    <div id="displayStatusMsg" class="text-xs font-semibold mt-1 h-4 text-slate-400">
+                        Sẵn sàng nhận dữ liệu
+                    </div>
+                </div>
+
+                <!-- Keypad Buttons 3x4 Grid -->
+                <div class="grid grid-cols-3 gap-2.5 max-w-xs mx-auto mb-4">
+                    <button onclick="pressKey('1')" class="key-btn bg-slate-800 hover:bg-slate-700 active:bg-cyan-600 text-slate-100 font-orbitron font-bold text-xl py-3 rounded-xl border border-slate-700/80 shadow-md transition-all">1</button>
+                    <button onclick="pressKey('2')" class="key-btn bg-slate-800 hover:bg-slate-700 active:bg-cyan-600 text-slate-100 font-orbitron font-bold text-xl py-3 rounded-xl border border-slate-700/80 shadow-md transition-all">2</button>
+                    <button onclick="pressKey('3')" class="key-btn bg-slate-800 hover:bg-slate-700 active:bg-cyan-600 text-slate-100 font-orbitron font-bold text-xl py-3 rounded-xl border border-slate-700/80 shadow-md transition-all">3</button>
+                    
+                    <button onclick="pressKey('4')" class="key-btn bg-slate-800 hover:bg-slate-700 active:bg-cyan-600 text-slate-100 font-orbitron font-bold text-xl py-3 rounded-xl border border-slate-700/80 shadow-md transition-all">4</button>
+                    <button onclick="pressKey('5')" class="key-btn bg-slate-800 hover:bg-slate-700 active:bg-cyan-600 text-slate-100 font-orbitron font-bold text-xl py-3 rounded-xl border border-slate-700/80 shadow-md transition-all">5</button>
+                    <button onclick="pressKey('6')" class="key-btn bg-slate-800 hover:bg-slate-700 active:bg-cyan-600 text-slate-100 font-orbitron font-bold text-xl py-3 rounded-xl border border-slate-700/80 shadow-md transition-all">6</button>
+                    
+                    <button onclick="pressKey('7')" class="key-btn bg-slate-800 hover:bg-slate-700 active:bg-cyan-600 text-slate-100 font-orbitron font-bold text-xl py-3 rounded-xl border border-slate-700/80 shadow-md transition-all">7</button>
+                    <button onclick="pressKey('8')" class="key-btn bg-slate-800 hover:bg-slate-700 active:bg-cyan-600 text-slate-100 font-orbitron font-bold text-xl py-3 rounded-xl border border-slate-700/80 shadow-md transition-all">8</button>
+                    <button onclick="pressKey('9')" class="key-btn bg-slate-800 hover:bg-slate-700 active:bg-cyan-600 text-slate-100 font-orbitron font-bold text-xl py-3 rounded-xl border border-slate-700/80 shadow-md transition-all">9</button>
+                    
+                    <button onclick="clearKeypad()" class="key-btn bg-rose-950/80 hover:bg-rose-900 active:bg-rose-800 text-rose-300 font-bold text-xs py-3 rounded-xl border border-rose-800 flex items-center justify-center gap-1 transition-all">
+                        <i class="fa-solid fa-rotate-left"></i> XOÁ
+                    </button>
+                    <button onclick="pressKey('0')" class="key-btn bg-slate-800 hover:bg-slate-700 active:bg-cyan-600 text-slate-100 font-orbitron font-bold text-xl py-3 rounded-xl border border-slate-700/80 shadow-md transition-all">0</button>
+                    <button onclick="submitKeypadCode()" class="key-btn bg-emerald-700 hover:bg-emerald-600 active:bg-emerald-500 text-white font-bold text-xs py-3 rounded-xl border border-emerald-500 shadow-lg shadow-emerald-900/30 flex items-center justify-center gap-1 transition-all">
+                        <i class="fa-solid fa-key"></i> MỞ CỬA
+                    </button>
+                </div>
+
+                <div class="mt-4 pt-4 border-t border-slate-800 flex items-center justify-center gap-3 text-slate-400 text-xs">
+                    <i class="fa-solid fa-triangle-exclamation text-amber-400"></i>
+                    <span>Chú ý: Nhập sai mật mã sẽ báo động 🚨</span>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer class="border-t border-slate-800/80 bg-slate-950 py-3 px-4 text-center text-xs text-slate-500 relative z-10">
+        <p>© 2026 TÀI LIỆU GIÁO DỤC LỚP 7 - THÀNH PHỐ HỒ CHÍ MINH VỊ TRÍ & TẦM VÓC MỚI</p>
+    </footer>
+
+    <!-- LOCK MODAL DIALOG -->
+    <div id="lockModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-xl w-full p-6 shadow-2xl relative overflow-hidden transform transition-all">
+            
+            <!-- Close Modal Button -->
+            <button onclick="closeLockModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- Modal Header -->
+            <div class="flex items-center gap-3 mb-4">
+                <div id="modalBadgeIcon" class="w-10 h-10 rounded-xl bg-cyan-950 border border-cyan-800 flex items-center justify-center text-cyan-400 text-lg">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                <div>
+                    <span id="modalLockCategory" class="text-xs font-bold text-cyan-400 uppercase tracking-wider">Ổ KHÓA 1</span>
+                    <h3 id="modalLockTitle" class="font-bold text-slate-100 text-lg">Tên thử thách</h3>
+                </div>
+            </div>
+
+            <!-- Question Content -->
+            <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl mb-5">
+                <p id="modalQuestionText" class="text-sm md:text-base text-slate-200 leading-relaxed font-medium">
+                    Nội dung câu hỏi thử thách...
+                </p>
+            </div>
+
+            <!-- Answer Options Grid -->
+            <div id="modalOptionsContainer" class="flex flex-col gap-2.5 mb-5">
+                <!-- Dynamic options generated by JS -->
+            </div>
+
+            <!-- Hint Feedback Alert Box (Shows ONLY on incorrect attempt, NO direct answer) -->
+            <div id="modalHintBox" class="hidden bg-amber-950/40 border border-amber-600/50 p-4 rounded-xl text-xs md:text-sm text-amber-200 flex items-start gap-3 mb-4">
+                <i class="fa-solid fa-lightbulb text-amber-400 text-lg shrink-0 mt-0.5"></i>
+                <div>
+                    <span class="font-bold text-amber-400 block mb-0.5">💡 MANH MỐI GỢI Ý (KHÔNG HIỆN ĐÁP ÁN):</span>
+                    <p id="modalHintText" class="text-slate-300">Nội dung manh mối...</p>
+                </div>
+            </div>
+
+            <!-- Modal Action Buttons -->
+            <div class="flex justify-end gap-3 pt-2 border-t border-slate-800">
+                <button onclick="closeLockModal()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-colors">
+                    Đóng lại
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ACCESS DENIED MODAL ALERTS -->
+    <div id="accessDeniedModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-rose-950/90 border-2 border-rose-600/80 rounded-3xl max-w-md w-full p-6 text-center shadow-2xl relative">
+            <div class="w-16 h-16 bg-rose-900/50 border border-rose-500 rounded-full flex items-center justify-center text-rose-400 text-3xl mx-auto mb-4 animate-pulse">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h2 class="font-orbitron font-black text-2xl text-rose-300 mb-2 tracking-wider">🚨 ACCESS DENIED!</h2>
+            <p class="text-sm text-rose-100/90 mb-5 leading-relaxed">
+                Mật mã bạn nhập không chính xác! Vui lòng kiểm tra lại 4 chữ số thu thập được và đọc kỹ quy luật sắp xếp.
+            </p>
+            <div class="bg-slate-950/80 border border-rose-900/60 p-3 rounded-xl text-xs text-rose-200 mb-5 text-left flex items-start gap-2">
+                <i class="fa-solid fa-lightbulb text-amber-400 text-base shrink-0 mt-0.5"></i>
+                <span>Gợi ý: Kiểm tra 4 chữ số bí mật đã thu thập đủ chưa và đã xếp theo thứ tự <strong class="text-amber-300">TĂNG DẦN</strong> từ nhỏ đến lớn chưa?</span>
+            </div>
+            <button onclick="closeAccessDeniedModal()" class="w-full py-3 bg-rose-600 hover:bg-rose-500 text-white font-bold text-sm rounded-xl shadow-lg transition-all">
+                <i class="fa-solid fa-arrow-rotate-left"></i> THỬ LẠI MẬT MÃ
+            </button>
+        </div>
+    </div>
+
+    <!-- ESCAPE SUCCESSFUL OVERLAY & ANIMATION -->
+    <div id="successOverlay" class="fixed inset-0 bg-slate-950 z-50 flex flex-col items-center justify-center p-4 hidden overflow-hidden">
+        
+        <!-- Sliding Doors Effect -->
+        <div id="doorLeft" class="door-panel-left absolute top-0 left-0 w-1/2 h-full bg-slate-900 border-r-4 border-emerald-500 flex items-center justify-end pr-8 z-20">
+            <i class="fa-solid fa-vault text-6xl text-slate-800"></i>
+        </div>
+        <div id="doorRight" class="door-panel-right absolute top-0 right-0 w-1/2 h-full bg-slate-900 border-l-4 border-emerald-500 flex items-center justify-start pl-8 z-20">
+            <i class="fa-solid fa-vault text-6xl text-slate-800"></i>
+        </div>
+
+        <!-- Success Content Inside Room -->
+        <div class="relative z-10 max-w-lg w-full bg-slate-900/95 border-2 border-emerald-500/80 rounded-3xl p-6 md:p-8 text-center shadow-2xl neon-border-emerald">
+            <div class="w-20 h-20 bg-emerald-950 border-2 border-emerald-400 rounded-full flex items-center justify-center text-emerald-400 text-4xl mx-auto mb-4 pulse-glow">
+                <i class="fa-solid fa-door-open"></i>
+            </div>
+            <span class="text-xs font-orbitron font-bold tracking-widest text-emerald-400 uppercase">CHÚC MỪNG HOÀN THÀNH!</span>
+            <h2 class="font-orbitron font-black text-2xl md:text-3xl text-white mb-2 neon-text-gold">
+                🔓 ESCAPE SUCCESS!
+            </h2>
+            <p class="text-slate-300 text-xs md:text-sm mb-6 leading-relaxed">
+                Bạn đã giải mã xuất sắc toàn bộ 4 ổ khóa kiến thức về <br><strong class="text-cyan-400">Thành phố Hồ Chí Minh – Vị trí và Tầm vóc mới</strong>!
+            </p>
+
+            <!-- Results Summary Card -->
+            <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 mb-6 grid grid-cols-2 gap-3 text-center">
+                <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800">
+                    <span class="block text-xs text-slate-400 mb-1">Tổng điểm đạt được</span>
+                    <span id="finalScore" class="font-orbitron font-bold text-xl text-amber-400">1000</span>
+                </div>
+                <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800">
+                    <span class="block text-xs text-slate-400 mb-1">Thời gian hoàn thành</span>
+                    <span id="finalTime" class="font-orbitron font-bold text-xl text-cyan-400">01:45</span>
+                </div>
+            </div>
+
+            <!-- Key Takeaway Knowledge Highlights -->
+            <div class="bg-slate-950/80 border border-emerald-900/50 p-4 rounded-xl text-xs text-left text-slate-300 mb-6 space-y-2">
+                <span class="font-bold text-emerald-400 block mb-1">📌 KIẾN THỨC CỐT LÕI ĐÃ MỞ KHÓA:</span>
+                <p>• <strong>Sáp nhập Siêu đô thị:</strong> Ngày 01/07/2025 sáp nhập TP.HCM, Bình Dương & Bà Rịa - Vũng Tàu (~8.600 km², >15 triệu cư dân, bộ máy 2 cấp).</p>
+                <p>• <strong>Thủ Thiêm (phường An Khánh):</strong> "Phố Wall của Việt Nam" - bộ não tài chính - thương mại.</p>
+                <p>• <strong>Cảng Cái Mép - Thị Vải:</strong> Thuộc cảng Bà Rịa - Vũng Tàu, lọt top 20 cảng container lớn nhất thế giới.</p>
+                <p>• <strong>Khu công nghệ cao Thủ Đức:</strong> Trái tim sản xuất chip, bảng mạch Intel, Samsung xuất khẩu toàn cầu.</p>
+            </div>
+
+            <!-- Restart Game Button -->
+            <button onclick="restartGame()" class="w-full py-3.5 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500 text-white font-orbitron font-bold text-sm rounded-xl shadow-lg transition-all transform hover:scale-[1.02]">
+                <i class="fa-solid fa-rotate-right mr-2"></i> CHƠI LẠI TRÒ CHƠI
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Game State Variables
+        let score = 1000;
+        let timerSeconds = 0;
+        let timerInterval = null;
+        let soundEnabled = true;
+        let activeLockId = null;
+        let currentKeypadInput = "";
+
+        // Locks Data Structure strictly aligned with provided document pages
+        const locksData = {
+            1: {
+                id: 1,
+                title: "🔎 TÌM MANH MỐI - Từ khóa quan trọng",
+                category: "Ổ KHÓA 1 - TÌM MANH MỐI",
+                question: "Trong tài liệu bài học, địa danh nào được ví như 'Phố Wall của Việt Nam' và thuộc đơn vị hành chính phường nào theo chú thích?",
+                options: [
+                    { text: "A. Thủ Thiêm (phường An Khánh)", correct: true },
+                    { text: "B. Phố đi bộ Nguyễn Huệ (phường Sài Gòn)", correct: false },
+                    { text: "C. Chợ Bến Thành (phường Bến Thành)", correct: false },
+                    { text: "D. Landmark 81 (phường Thạnh Mỹ Tây)", correct: false }
+                ],
+                secretDigit: 8,
+                hint: "Xem đoạn 'Trung tâm tài chính - thương mại hiện đại' ở trang 3: Nơi hội tụ các ngân hàng và tập đoàn đa quốc gia thuộc phường An Khánh.",
+                solved: false
+            },
+            2: {
+                id: 2,
+                title: "🧩 GIẢI MÃ - Ba mảnh ghép vàng",
+                category: "Ổ KHÓA 2 - GIẢI MÃ",
+                question: "Trong ba 'mảnh ghép vàng' của siêu đô thị TP.HCM, lĩnh vực nào được ví là 'Bộ não tài chính - thương mại' và lĩnh vực nào là 'Cánh tay sản xuất'?",
+                options: [
+                    { text: "A. Du lịch sinh thái & Khai thác khoáng sản", correct: false },
+                    { text: "B. Trung tâm tài chính – thương mại hiện đại & Công nghiệp công nghệ cao", correct: true },
+                    { text: "C. Cảng biển quốc tế & Nông nghiệp công nghệ cao", correct: false },
+                    { text: "D. Dịch vụ bưu chính & Giao thông đô thị", correct: false }
+                ],
+                secretDigit: 2,
+                hint: "Đọc các biểu tượng hình học màu cam ở trang 4: Mảnh ghép điều phối dòng vốn kết nối đầu tư và mảnh ghép biến TP.HCM thành công xưởng thông minh.",
+                solved: false
+            },
+            3: {
+                id: 3,
+                title: "🕵️ TRUY TÌM - Cảng biển & KCN",
+                category: "Ổ KHÓA 3 - TRUY TÌM",
+                question: "Truy tìm thông tin ĐÚNG NẤT về bến cảng và các khu công nghiệp được nêu ở trang 4 của tài liệu:",
+                options: [
+                    { text: "A. Cảng Cái Mép - Thị Vải thuộc TP.HCM, lọt top 5 cảng container lớn nhất thế giới", correct: false },
+                    { text: "B. Bến cảng Cái Mép - Thị Vải (Bà Rịa - Vũng Tàu) lọt top 20 cảng container lớn nhất thế giới; KCN VSIP, Sóng Thần thuộc Bình Dương", correct: true },
+                    { text: "C. Bến cảng Cát Lái thuộc Bà Rịa - Vũng Tàu, VSIP thuộc Thủ Đức", correct: false },
+                    { text: "D. Khu công nghiệp Sóng Thần thuộc bến cảng Cát Lái", correct: false }
+                ],
+                secretDigit: 1,
+                hint: "Chú ý phần 'Cảng biển quốc tế – Du lịch biển' và mục Công nghiệp công nghệ cao ở Bình Dương (VSIP, Sóng Thần).",
+                solved: false
+            },
+            4: {
+                id: 4,
+                title: "🧠 THỬ THÁCH CUỐI - Trái tim sản xuất chip",
+                category: "Ổ KHÓA 4 - THỬ THÁCH CUỐI",
+                question: "Vận dụng kiến thức bài học: Nơi nào được ví là 'trái tim của nền sản xuất hiện đại' – nơi sản xuất chip, bảng mạch Intel, Samsung xuất khẩu khắp thế giới?",
+                options: [
+                    { text: "A. Khu công nghệ cao Thủ Đức", correct: true },
+                    { text: "B. Khu công nghiệp VSIP Bình Dương", correct: false },
+                    { text: "C. Bến cảng Cát Lái", correct: false },
+                    { text: "D. Khu công nghiệp Sóng Thần", correct: false }
+                ],
+                secretDigit: 5,
+                hint: "Tìm tên khu công nghệ thuộc Thủ Đức được nêu ở trang 4 dưới phần 'Công nghiệp công nghệ cao'.",
+                solved: false
+            }
+        };
+
+        // Master Code Rule:
+        // Unlocked Digits: Lock 1 = 8, Lock 2 = 2, Lock 3 = 1, Lock 4 = 5
+        // Rule Clue: Sort 4 digits in ASCENDING order (1, 2, 5, 8) -> Correct Passcode: "1258"
+        const MASTER_PASSCODE = "1258";
+
+        // Sound FX system using Web Audio API (No external mp3 or voice reader needed)
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            try {
+                if (!audioCtx) audioCtx = new AudioCtx();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                const now = audioCtx.currentTime;
+
+                if (type === 'beep') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(600, now);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+                    osc.start(now);
+                    osc.stop(now + 0.08);
+                } else if (type === 'unlock') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, now); // C5
+                    osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+                    osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+                    osc.start(now);
+                    osc.stop(now + 0.35);
+                } else if (type === 'error') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(180, now);
+                    osc.frequency.setValueAtTime(140, now + 0.15);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else if (type === 'victory') {
+                    const freqs = [523.25, 659.25, 783.99, 1046.50];
+                    freqs.forEach((f, idx) => {
+                        const o = audioCtx.createOscillator();
+                        const g = audioCtx.createGain();
+                        o.type = 'sine';
+                        o.frequency.setValueAtTime(f, now + idx * 0.12);
+                        g.connect(audioCtx.destination);
+                        g.gain.setValueAtTime(0.15, now + idx * 0.12);
+                        g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.12 + 0.3);
+                        o.start(now + idx * 0.12);
+                        o.stop(now + idx * 0.12 + 0.3);
+                    });
+                }
+            } catch (e) {
+                console.log("Audio play error:", e);
+            }
+        }
+
+        // On Page Load Initialization
+        window.addEventListener('DOMContentLoaded', () => {
+            startTimer();
+            updateUI();
+
+            // Sound toggle handler
+            document.getElementById('soundToggleBtn').addEventListener('click', () => {
+                soundEnabled = !soundEnabled;
+                const icon = document.getElementById('soundIcon');
+                if (soundEnabled) {
+                    icon.className = 'fa-solid fa-volume-high text-base text-cyan-400';
+                } else {
+                    icon.className = 'fa-solid fa-volume-xmark text-base text-slate-500';
+                }
+            });
+        });
+
+        // Timer function
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timerSeconds++;
+                const mins = String(Math.floor(timerSeconds / 60)).padStart(2, '0');
+                const secs = String(timerSeconds % 60).padStart(2, '0');
+                document.getElementById('timerDisplay').innerText = `${mins}:${secs}`;
+                
+                // Deduct score slightly over time
+                if (timerSeconds % 15 === 0 && score > 200) {
+                    score -= 5;
+                    document.getElementById('scoreDisplay').innerText = score;
+                }
+            }, 1000);
+        }
+
+        // Open Modal for specific Lock
+        function openLockModal(id) {
+            playSound('beep');
+            activeLockId = id;
+            const lock = locksData[id];
+
+            document.getElementById('modalLockCategory').innerText = lock.category;
+            document.getElementById('modalLockTitle').innerText = lock.title;
+            document.getElementById('modalQuestionText').innerText = lock.question;
+            document.getElementById('modalHintBox').classList.add('hidden');
+
+            const container = document.getElementById('modalOptionsContainer');
+            container.innerHTML = '';
+
+            lock.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'w-full text-left p-3.5 rounded-xl border border-slate-800 bg-slate-950 hover:bg-slate-800 hover:border-cyan-500/50 text-slate-200 text-xs md:text-sm font-medium transition-all flex items-center justify-between group';
+                btn.onclick = () => selectOption(id, opt, btn);
+
+                if (lock.solved) {
+                    if (opt.correct) {
+                        btn.className = 'w-full text-left p-3.5 rounded-xl border border-emerald-600 bg-emerald-950/60 text-emerald-300 text-xs md:text-sm font-bold flex items-center justify-between';
+                        btn.innerHTML = `<span>${opt.text}</span> <i class="fa-solid fa-circle-check text-emerald-400 text-base"></i>`;
+                    } else {
+                        btn.className = 'w-full text-left p-3.5 rounded-xl border border-slate-800/50 bg-slate-950/40 text-slate-500 text-xs md:text-sm flex items-center justify-between cursor-not-allowed';
+                        btn.innerHTML = `<span>${opt.text}</span>`;
+                    }
+                    btn.onclick = null;
+                } else {
+                    btn.innerHTML = `<span>${opt.text}</span> <i class="fa-regular fa-circle text-slate-600 group-hover:text-cyan-400 transition-colors"></i>`;
+                }
+
+                container.appendChild(btn);
+            });
+
+            document.getElementById('lockModal').classList.remove('hidden');
+        }
+
+        // Option selection logic
+        function selectOption(lockId, option, elementBtn) {
+            const lock = locksData[lockId];
+            if (lock.solved) return;
+
+            if (option.correct) {
+                // Correct Answer!
+                playSound('unlock');
+                lock.solved = true;
+                score += 150;
+                document.getElementById('scoreDisplay').innerText = score;
+
+                // Show digit feedback
+                elementBtn.className = 'w-full text-left p-3.5 rounded-xl border-2 border-emerald-500 bg-emerald-950 text-emerald-200 text-xs md:text-sm font-bold flex items-center justify-between shadow-lg shadow-emerald-950/50';
+                elementBtn.innerHTML = `<span>${option.text}</span> <div class="flex items-center gap-2"><span class="bg-emerald-500 text-black px-2 py-0.5 rounded text-xs font-orbitron">MÃ +${lock.secretDigit}</span><i class="fa-solid fa-circle-check text-emerald-400"></i></div>`;
+
+                // Hide hint box if visible
+                document.getElementById('modalHintBox').classList.add('hidden');
+
+                // Update lock cards state
+                updateLockStateUI(lockId);
+
+                // Auto close modal after brief delay
+                setTimeout(() => {
+                    closeLockModal();
+                }, 1200);
+
+            } else {
+                // Wrong Answer! Show Hint ONLY, NO Answer reveal!
+                playSound('error');
+                score = Math.max(100, score - 30);
+                document.getElementById('scoreDisplay').innerText = score;
+
+                elementBtn.className = 'w-full text-left p-3.5 rounded-xl border border-rose-800 bg-rose-950/40 text-rose-300 text-xs md:text-sm font-medium flex items-center justify-between';
+                elementBtn.innerHTML = `<span>${option.text}</span> <i class="fa-solid fa-circle-xmark text-rose-500"></i>`;
+                
+                // Show Hint box
+                const hintBox = document.getElementById('modalHintBox');
+                document.getElementById('modalHintText').innerText = lock.hint;
+                hintBox.classList.remove('hidden');
+            }
+        }
+
+        function closeLockModal() {
+            playSound('beep');
+            document.getElementById('lockModal').classList.add('hidden');
+        }
+
+        function updateLockStateUI(id) {
+            const lock = locksData[id];
+            if (lock.solved) {
+                const card = document.getElementById(`lockCard${id}`);
+                card.classList.remove('bg-slate-900/90', 'border-slate-800');
+                card.classList.add('bg-emerald-950/30', 'border-emerald-600/80', 'neon-border-emerald');
+
+                const icon = document.getElementById(`lockIcon${id}`);
+                icon.className = 'w-8 h-8 rounded-full bg-emerald-950 border border-emerald-500 flex items-center justify-center text-emerald-400 font-bold';
+                icon.innerHTML = '<i class="fa-solid fa-lock-open"></i>';
+
+                const status = document.getElementById(`lockStatus${id}`);
+                status.innerHTML = `<span class="text-emerald-400 font-semibold flex items-center gap-1"><i class="fa-solid fa-check"></i> Đã mở khóa</span>`;
+
+                const badge = document.getElementById(`digitBadge${id}`);
+                badge.innerText = `MÃ: ${lock.secretDigit}`;
+                badge.classList.remove('hidden');
+
+                // Update notebook digit
+                const colDigit = document.getElementById(`collectedDigit${id}`);
+                colDigit.innerText = lock.secretDigit;
+                colDigit.className = 'font-orbitron font-black text-2xl text-emerald-400 neon-text-gold';
+            }
+
+            checkProgress();
+        }
+
+        function checkProgress() {
+            let solvedCount = 0;
+            for (let i = 1; i <= 4; i++) {
+                if (locksData[i].solved) solvedCount++;
+            }
+
+            const percent = (solvedCount / 4) * 100;
+            document.getElementById('progressText').innerText = `Đã mở: ${solvedCount} / 4 Ổ khóa`;
+            document.getElementById('progressPercent').innerText = `${percent}%`;
+            document.getElementById('progressBar').style.width = `${percent}%`;
+
+            // If all 4 locks solved, update notebook clue text to give sorting instruction
+            if (solvedCount === 4) {
+                const ruleBox = document.getElementById('ruleClueBox');
+                ruleBox.className = 'bg-emerald-950/40 border border-emerald-600/60 p-3.5 rounded-xl text-xs text-emerald-200 flex items-start gap-2.5 animate-pulse';
+                document.getElementById('ruleClueText').innerHTML = `
+                    <span class="font-bold text-emerald-400">🔓 QUY LUẬT MẬT MÃ MỞ CỬA:</span><br>
+                    Hãy sắp xếp 4 chữ số bí mật bạn vừa thu thập được <span class="underline font-black text-amber-300">THEO THỨ TỰ TĂNG DẦN</span> (từ nhỏ đến lớn: 1 ➔ 2 ➔ 5 ➔ 8) để nhập vào bàn phím!
+                `;
+            }
+        }
+
+        function pressKey(num) {
+            playSound('beep');
+            if (currentKeypadInput.length < 4) {
+                currentKeypadInput += num;
+                updateKeypadDisplay();
+            }
+        }
+
+        function clearKeypad() {
+            playSound('beep');
+            currentKeypadInput = "";
+            updateKeypadDisplay();
+            document.getElementById('displayStatusMsg').innerText = "Đã xoá mật mã";
+            document.getElementById('displayStatusMsg').className = "text-xs font-semibold mt-1 h-4 text-slate-400";
+        }
+
+        function updateKeypadDisplay() {
+            const display = document.getElementById('keypadDisplay');
+            if (currentKeypadInput.length === 0) {
+                display.innerText = "_ _ _ _";
+            } else {
+                const padded = currentKeypadInput.padEnd(4, '_');
+                display.innerText = padded.split('').join(' ');
+            }
+        }
+
+        function submitKeypadCode() {
+            if (currentKeypadInput.length < 4) {
+                playSound('error');
+                document.getElementById('displayStatusMsg').innerText = "Vui lòng nhập đủ 4 chữ số!";
+                document.getElementById('displayStatusMsg').className = "text-xs font-semibold mt-1 h-4 text-amber-400";
+                return;
+            }
+
+            if (currentKeypadInput === MASTER_PASSCODE) {
+                // SUCCESS PASSCODE MATCH!
+                playSound('victory');
+                clearInterval(timerInterval);
+
+                const mins = String(Math.floor(timerSeconds / 60)).padStart(2, '0');
+                const secs = String(Math.floor(timerSeconds % 60)).padStart(2, '0');
+
+                document.getElementById('finalScore').innerText = score;
+                document.getElementById('finalTime').innerText = `${mins}:${secs}`;
+
+                // Trigger Door Animation & Overlay
+                const overlay = document.getElementById('successOverlay');
+                overlay.classList.remove('hidden');
+
+                setTimeout(() => {
+                    overlay.classList.add('door-open');
+                }, 300);
+
+            } else {
+                // ACCESS DENIED!
+                playSound('error');
+                score = Math.max(50, score - 50);
+                document.getElementById('scoreDisplay').innerText = score;
+
+                document.getElementById('displayStatusMsg').innerText = "🚨 MẬT MÃ KHÔNG CHÍNH XÁC!";
+                document.getElementById('displayStatusMsg').className = "text-xs font-semibold mt-1 h-4 text-rose-500 font-bold";
+
+                document.getElementById('accessDeniedModal').classList.remove('hidden');
+            }
+        }
+
+        function closeAccessDeniedModal() {
+            playSound('beep');
+            document.getElementById('accessDeniedModal').classList.add('hidden');
+            clearKeypad();
+        }
+
+        function restartGame() {
+            playSound('beep');
+            // Reset state
+            score = 1000;
+            timerSeconds = 0;
+            currentKeypadInput = "";
+            activeLockId = null;
+
+            for (let i = 1; i <= 4; i++) {
+                locksData[i].solved = false;
+
+                const card = document.getElementById(`lockCard${i}`);
+                card.className = 'lock-card bg-slate-900/90 border border-slate-800 hover:border-cyan-500/60 p-5 rounded-2xl cursor-pointer relative overflow-hidden group';
+
+                const icon = document.getElementById(`lockIcon${i}`);
+                icon.className = 'w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400 group-hover:text-amber-400 transition-colors';
+                icon.innerHTML = '<i class="fa-solid fa-lock"></i>';
+
+                const status = document.getElementById(`lockStatus${i}`);
+                status.innerHTML = `<span class="text-slate-500">Trạng thái: <span class="text-amber-400 font-medium">Đang khóa</span></span>`;
+
+                const badge = document.getElementById(`digitBadge${i}`);
+                badge.innerText = `MÃ: ?`;
+                badge.classList.add('hidden');
+
+                const colDigit = document.getElementById(`collectedDigit${i}`);
+                colDigit.innerText = '?';
+                colDigit.className = 'font-orbitron font-black text-xl text-slate-600';
+            }
+
+            document.getElementById('ruleClueBox').className = 'bg-amber-950/30 border border-amber-800/40 p-3.5 rounded-xl text-xs text-amber-200/90 flex items-start gap-2.5';
+            document.getElementById('ruleClueText').innerHTML = `
+                <span class="font-bold text-amber-400">QUY LUẬT SẮP XẾP MẬT MÃ:</span> Hãy mở tất cả 4 ổ khóa để nhận chỉ dẫn sắp xếp thứ tự 4 chữ số vào bàn phím thoát hiểm!
+            `;
+
+            document.getElementById('scoreDisplay').innerText = score;
+            clearKeypad();
+            checkProgress();
+
+            // Hide success overlay and reset doors
+            const overlay = document.getElementById('successOverlay');
+            overlay.classList.remove('door-open');
+            overlay.classList.add('hidden');
+
+            startTimer();
+        }
+
+        function updateUI() {
+            checkProgress();
+        }
+    </script>
+</body>
+</html>
